@@ -66,10 +66,20 @@ dotnet build -c Release
 
 ```bash
 cd backend-java
-# run via Maven
-mvn spring-boot:run
-# or build and run the jar
-mvn package
+
+# build and package
+# On Mac/Linux:
+./mvnw clean package
+# On Windows:
+mvnw.cmd clean package
+
+# run via Maven wrapper
+# On Mac/Linux:
+./mvnw spring-boot:run
+# On Windows:
+mvnw.cmd spring-boot:run
+
+# run via jar
 java -jar target/*.jar
 ```
 
@@ -80,12 +90,20 @@ java -jar target/*.jar
 ```bash
 cd backend-python
 python -m venv .venv
-source .venv/bin/activate   # macOS/Linux
+
+# windows
+.venv\Scripts\activate
+
+# macOS/Linux
+source .venv/bin/activate
+
 pip install -U pip
 # install dependencies (use your chosen tool; the repo provides pyproject.toml)
 pip install fastapi uvicorn
+
 # run dev server
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
+
 # or run the module directly
 python main.py
 ```

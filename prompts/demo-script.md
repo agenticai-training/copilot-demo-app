@@ -16,27 +16,45 @@
 - **Frontend (React/Vite)**:
   - Prompt: "Create a new React project named 'frontend-react' using Vite with TypeScript."
 
-### 2. Explore Structure
-
-- **Workspace Overview**:
-  - Prompt: "@workspace Explain the project structure of this workspace. What tech stacks are used?"
-- **Dependency Analysis**:
-  - Open `backend-python/pyproject.toml`.
-  - Prompt: "What dependencies are defined here and what do they do?"
-  - Open `backend-dotnet/backend-dotnet.csproj`.
-  - Prompt: "Explain the target framework and packages used in this project."
-
-### 3. Run & Verify
+### 2. Run & Verify
 
 - **Execution Instructions**:
   - Prompt: "@workspace How do I run each of the backend services and the frontend application? Provide the terminal commands for each."
 
-## Phase 2: CRUD Implementation
+## Phase 2: Requirements & Planning
+
+- **Goal**: Capture functional and non-functional requirements, break them into JIRA-friendly work items (Epics → User Stories → Subtasks), and automate the creation of JIRA issues via MCP.
+- **Branch**: `feature/requirements-planning`
+- **Tasks**:
+  - Create `requirements/REQUIREMENTS.md` listing **functional** requirements (Product CRUD, search, validation, pagination, sorting/filtering) and **non-functional** requirements (performance targets, security, logging, monitoring, scalability, SLAs), plus clear acceptance criteria and basic test cases.
+  - Add `planning/JIRA_BREAKDOWN.md` mapping each requirement to JIRA **Epics**, **User Stories**, and **Subtasks**, with _story points_, _priority_, and _acceptance criteria_.
+  - Create `mcp/jira/` examples and instructions (e.g., `mcp/jira/create_issues.md`) with sample MCP prompt sequences to create Epics, Stories, and Subtasks programmatically, including linking (Epic → Story → Subtask).
+- **Prompts**:
+  - "Create `REQUIREMENTS.md` with functional and non-functional requirements for the Product feature and acceptance criteria."
+  - "Break the REQUIREMENTS into JIRA Epics → User Stories → Subtasks and produce `planning/JIRA_BREAKDOWN.md` with story points and acceptance criteria."
+  - "Provide MCP prompt examples to create a JIRA Epic named 'Products', add Stories linked to that Epic, and create Subtasks for implementation and testing."
+
+## Phase 3: Architecture & Design
+
+- **Goal**: Define system architecture, API contracts, and design artifacts required to safely implement the Product feature.
+- **Branch**: `feature/architecture-design`
+- **Tasks**:
+  - Write `architecture/ARCHITECTURE.md` describing high-level components (frontend, API, backend services, data stores), data flow, and a deployment diagram (ASCII or Mermaid).
+  - Add `architecture/DISCOVERY.md` capturing findings from workspace exploration (stack, key dependencies, notable configs) and link it from `ARCHITECTURE.md`.
+  - Add an ADR at `docs/adr/0001-product-api.md` documenting major decisions (API contract format, auth approach, data model choices).
+  - Produce an OpenAPI file `api/openapi-products.yaml` defining Product endpoints and models (GET /products, POST /products, PUT /products/{id}, DELETE /products/{id}).
+  - Define interface contracts and provide example request/response payloads used for implementation and tests.
+- **Prompts**:
+  - "Generate `ARCHITECTURE.md` with components, a Mermaid diagram, and the `Product` data model."
+  - "Create `api/openapi-products.yaml` that defines product endpoints and example request/response payloads."
+  - "Add `architecture/DISCOVERY.md` by running discovery prompts: '@workspace Explain the project structure of this workspace. What tech stacks are used?', 'Open `backend-python/pyproject.toml` and list dependencies and their purpose', 'Open `backend-dotnet/backend-dotnet.csproj` and explain the target framework and packages used.'"
+
+## Phase 4: CRUD Implementation
 
 - **Goal**: Implement Product CRUD in Java, .NET, and Python.
 - **Branch**: `feature/crud-operations`
 - **Java**:
-  - Open `DemoApplication.java` (or create `ProductController.java`).
+  - Open `BackendJavaApplication.java` (or create `ProductController.java`).
   - Prompt: "Create a `Product` record with fields: id, name, price. Then create a `ProductController` with a static list to store products and implement GET and POST endpoints."
 - **.NET**:
   - Open `Program.cs`.
@@ -48,7 +66,7 @@
   - Open `frontend-react/src/App.jsx`.
   - Prompt: "Create a functional component that fetches products from `http://localhost:8080/products` using `useEffect` and displays them in a list. Handle loading and error states."
 
-## Phase 3: Testing & Code Review
+## Phase 5: Testing & Code Review
 
 - **Goal**: Generate tests, debug, and review code.
 - **Branch**: `feature/tests-and-review`
@@ -68,7 +86,7 @@
   - Introduce a bug (e.g., remove a null check).
   - Prompt: "@workspace /fix Fix the bug in the selected code."
 
-## Phase 4: Documentation
+## Phase 6: Documentation
 
 - **Goal**: Generate code documentation and project docs.
 - **Branch**: `feature/documentation`
@@ -82,11 +100,10 @@
   - Open `README.md`.
   - Prompt: "@workspace Write a comprehensive README.md that explains the project structure, how to run each backend service, and how to start the frontend."
 
-## Phase 5: DevOps
+## Phase 7: DevOps
 
 - **Goal**: Containerize and Automate.
-- **Branch**: `feature/devops`
-- **Docker**:
+- **Branch**: `feature/devops`- **Docker**:
   - Action: Create `Dockerfile` in `backend-python`.
   - Prompt: "Generate a multi-stage Dockerfile for this FastAPI application using a lightweight python image."
 - **Docker Compose**:
