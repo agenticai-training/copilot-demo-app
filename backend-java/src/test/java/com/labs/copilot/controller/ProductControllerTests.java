@@ -196,7 +196,7 @@ class ProductControllerTests {
     @Test
     @DisplayName("Should search products by query")
     void testSearchProductsByQuery() throws Exception {
-        mockMvc.perform(get("/search")
+        mockMvc.perform(get("/products/search")
                 .param("query", "laptop"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.pagination", notNullValue()));
@@ -205,7 +205,7 @@ class ProductControllerTests {
     @Test
     @DisplayName("Should search products by category")
     void testSearchProductsByCategory() throws Exception {
-        mockMvc.perform(get("/search")
+        mockMvc.perform(get("/products/search")
                 .param("category", "Electronics"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data", hasSize(greaterThan(0))));
@@ -214,7 +214,7 @@ class ProductControllerTests {
     @Test
     @DisplayName("Should search products by minimum price")
     void testSearchProductsByMinPrice() throws Exception {
-        mockMvc.perform(get("/search")
+        mockMvc.perform(get("/products/search")
                 .param("minPrice", "100"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.pagination", notNullValue()));
@@ -223,7 +223,7 @@ class ProductControllerTests {
     @Test
     @DisplayName("Should search products by maximum price")
     void testSearchProductsByMaxPrice() throws Exception {
-        mockMvc.perform(get("/search")
+        mockMvc.perform(get("/products/search")
                 .param("maxPrice", "500"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.pagination", notNullValue()));
@@ -232,7 +232,7 @@ class ProductControllerTests {
     @Test
     @DisplayName("Should search products by price range")
     void testSearchProductsByPriceRange() throws Exception {
-        mockMvc.perform(get("/search")
+        mockMvc.perform(get("/products/search")
                 .param("minPrice", "50")
                 .param("maxPrice", "500"))
                 .andExpect(status().isOk())
@@ -242,7 +242,7 @@ class ProductControllerTests {
     @Test
     @DisplayName("Should search products by stock availability")
     void testSearchProductsByStock() throws Exception {
-        mockMvc.perform(get("/search")
+        mockMvc.perform(get("/products/search")
                 .param("inStock", "true"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data", hasSize(greaterThan(0))));
@@ -251,7 +251,7 @@ class ProductControllerTests {
     @Test
     @DisplayName("Should search with multiple filters combined")
     void testSearchProductsCombinedFilters() throws Exception {
-        mockMvc.perform(get("/search")
+        mockMvc.perform(get("/products/search")
                 .param("query", "laptop")
                 .param("category", "Electronics")
                 .param("minPrice", "500")
@@ -264,7 +264,7 @@ class ProductControllerTests {
     @Test
     @DisplayName("Should return empty results for non-matching search")
     void testSearchProductsNoResults() throws Exception {
-        mockMvc.perform(get("/search")
+        mockMvc.perform(get("/products/search")
                 .param("query", "NONEXISTENT123ABC"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data", hasSize(0)))
@@ -274,7 +274,7 @@ class ProductControllerTests {
     @Test
     @DisplayName("Should include search time in response metadata")
     void testSearchProductsMetadata() throws Exception {
-        mockMvc.perform(get("/search")
+        mockMvc.perform(get("/products/search")
                 .param("query", "mouse"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$._metadata.source", equalTo("elasticsearch")))
@@ -284,7 +284,7 @@ class ProductControllerTests {
     @Test
     @DisplayName("Should support pagination in search results")
     void testSearchProductsPagination() throws Exception {
-        mockMvc.perform(get("/search")
+        mockMvc.perform(get("/products/search")
                 .param("page", "1")
                 .param("pageSize", "5"))
                 .andExpect(status().isOk())
