@@ -5,6 +5,14 @@ import com.labs.copilot.dto.PaginatedResponse;
 import com.labs.copilot.dto.ResponseMetadata;
 import com.labs.copilot.model.Product;
 import com.labs.copilot.service.ProductService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +34,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1")
 @CrossOrigin(origins = "http://localhost:5173")
+@Tag(name = "Products", description = "Product search and retrieval endpoints")
 public class ProductController {
 
     @Autowired
@@ -43,10 +52,21 @@ public class ProductController {
      * @return paginated product list
      */
     @GetMapping("/products")
+    @Operation(summary = "Get all products", description = "Retrieve all active products with pagination and sorting support")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved products",
+                    content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "400", description = "Invalid pagination parameters"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     public ResponseEntity<PaginatedResponse<Product>> getAllProducts(
+            @Parameter(description = "Page number (1-based)", example = "1")
             @RequestParam(defaultValue = "1") Integer page,
+            @Parameter(description = "Items per page (max 100)", example = "20")
             @RequestParam(defaultValue = "20") Integer pageSize,
+            @Parameter(description = "Sort field: name, price, or created", example = "name")
             @RequestParam(defaultValue = "name") String sortBy,
+            @Parameter(description = "Sort order: asc or desc", example = "asc")
             @RequestParam(defaultValue = "asc") String sortOrder) {
         
         // Validate pagination parameters
@@ -87,7 +107,16 @@ public class ProductController {
      * @return product details or 404 if not found
      */
     @GetMapping("/products/{productId}")
-    public ResponseEntity<?> getProductById(@PathVariable String productId) {
+    @Operation(summary = "Get product by ID", description = "Retrieve a specific product by its UUID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Product found"),
+            @ApiResponse(responseCode = "400", description = "Invalid product ID format"),
+            @ApiResponse(responseCode = "404", description = "Product not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<?> getProductById(
+            @Parameter(description = "Product UUID", example = "550e8400-e29b-41d4-a716-446655440000")
+            @PathVariable String productId) {
         try {
             UUID id = UUID.fromString(productId);
             Optional<Product> product = productService.getProductById(id);
@@ -132,13 +161,26 @@ public class ProductController {
      * @return search results with pagination
      */
     @GetMapping("/search")
+    @Operation(summary = "Search products", description = "Full-text search products with optional category, price, and stock filters")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Search completed successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid filter parameters"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     public ResponseEntity<PaginatedResponse<Product>> searchProducts(
+            @Parameter(description = "Search query (searches name and description)", example = "laptop")
             @RequestParam(required = false) String query,
+            @Parameter(description = "Product category filter", example = "Electronics")
             @RequestParam(required = false) String category,
+            @Parameter(description = "Minimum price filter", example = "500")
             @RequestParam(required = false) BigDecimal minPrice,
+            @Parameter(description = "Maximum price filter", example = "1500")
             @RequestParam(required = false) BigDecimal maxPrice,
+            @Parameter(description = "Filter by stock availability", example = "true")
             @RequestParam(required = false) Boolean inStock,
+            @Parameter(description = "Page number (1-based)", example = "1")
             @RequestParam(defaultValue = "1") Integer page,
+            @Parameter(description = "Items per page (max 100)", example = "20")
             @RequestParam(defaultValue = "20") Integer pageSize) {
 
         long startTime = System.currentTimeMillis();
@@ -184,9 +226,17 @@ public class ProductController {
      * @return products in category
      */
     @GetMapping("/products/category/{category}")
+    @Operation(summary = "Get products by category", description = "Retrieve all products in a specific category with pagination")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved category products"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     public ResponseEntity<PaginatedResponse<Product>> getByCategory(
+            @Parameter(description = "Category name", example = "Electronics")
             @PathVariable String category,
+            @Parameter(description = "Page number (1-based)", example = "1")
             @RequestParam(defaultValue = "1") Integer page,
+            @Parameter(description = "Items per page (max 100)", example = "20")
             @RequestParam(defaultValue = "20") Integer pageSize) {
 
         if (page < 1) page = 1;
@@ -221,6 +271,10 @@ public class ProductController {
      * GET /api/v1/health
      */
     @GetMapping("/health")
+    @Operation(summary = "Health check", description = "Check if the product service is running")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Service is running")
+    })
     public ResponseEntity<String> health() {
         return ResponseEntity.ok("Product search service is running");
     }
