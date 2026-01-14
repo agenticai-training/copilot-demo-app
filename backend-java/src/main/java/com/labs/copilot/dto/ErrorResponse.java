@@ -1,7 +1,5 @@
 package com.labs.copilot.dto;
 
-import java.util.List;
-
 /**
  * Error response format as per API specification.
  */

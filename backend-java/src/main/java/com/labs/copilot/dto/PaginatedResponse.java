@@ -1,6 +1,5 @@
 package com.labs.copilot.dto;
 
-import com.labs.copilot.model.Product;
 import java.util.List;
 
 /**

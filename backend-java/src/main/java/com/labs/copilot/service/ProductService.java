@@ -137,13 +137,13 @@ public class ProductService {
         pageSize = Math.min(pageSize, 100);
 
         List<Product> results = mockProducts.stream()
-                .filter(p -> p.getStatus() == ProductStatus.ACTIVE || !inStock)
+                .filter(p -> p.getStatus() == ProductStatus.ACTIVE || (inStock != null && !inStock))
                 .filter(p -> query == null || p.getName().toLowerCase().contains(query.toLowerCase()) ||
                         (p.getDescription() != null && p.getDescription().toLowerCase().contains(query.toLowerCase())))
                 .filter(p -> category == null || p.getCategory().equalsIgnoreCase(category))
                 .filter(p -> minPrice == null || p.getPrice().compareTo(minPrice) >= 0)
                 .filter(p -> maxPrice == null || p.getPrice().compareTo(maxPrice) <= 0)
-                .filter(p -> inStock == null || inStock || p.getStockQuantity() > 0)
+                .filter(p -> inStock == null || !inStock || p.getStockQuantity() > 0)
                 .collect(Collectors.toList());
 
         int totalCount = results.size();
