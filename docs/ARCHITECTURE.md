@@ -134,9 +134,9 @@ graph TB
     
     UI -->|All requests| NGINX
     
-    NGINX -->|Write (POST,PUT,PATCH,DELETE)| NET
-    NGINX -->|Read (GET /products)| NET
-    NGINX -->|Search (GET /search)| JAVA
+    NGINX -->|Write ops: POST, PUT, PATCH, DELETE| NET
+    NGINX -->|Read: GET products| NET
+    NGINX -->|Search: GET search| JAVA
     NGINX -->|Validate| PY
     
     NET -->|Read/Write| DB1
